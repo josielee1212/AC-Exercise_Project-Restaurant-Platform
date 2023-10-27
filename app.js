@@ -15,8 +15,20 @@ app.get('/', (req, res) => {
 })
 
 app.get('/restaurants', (req, res) => {
-  res.render('index',{restaurants:restaurants})
+  res.render('index', { restaurants: restaurants})
 })
+
+app.get('/search', (req, res) => {
+const keyword = req.query.kw;
+const trimKeyword = keyword.replace(/\s/g, '').toLowerCase(); // 去除所有空格和變小寫
+  const matchedRestaurants = keyword ? restaurants.filter((store) => {
+    const name = store.name.toLowerCase().trim();
+    const category = store.category.toLowerCase().trim();
+    return name.includes(trimKeyword) || category.includes(trimKeyword);
+  }) : restaurants;
+  
+  res.render('index', { restaurants: matchedRestaurants, keyword });
+});
 
 app.get('/restaurant/:id', (req, res) => {
   const id = req.params.id
