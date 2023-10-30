@@ -14,22 +14,19 @@ app.get('/', (req, res) => {
 })
 
 app.get('/restaurants', (req, res) => {
-  res.render('index', { restaurants })
-})
-
-app.get('/search', (req, res) => {
   const keyword = req.query.kw
-  const trimKeyword = keyword.replace(/\s/g, '').toLowerCase() // 去除所有空格和變小寫
-  const matchedRestaurants = keyword
+  const matchedRestaurants = keyword  //keyword存在才進行餐廳篩選，否則等於所有餐廳
     ? restaurants.filter((store) => {
+      const trimKeyword = keyword.replace(/\s/g, '').toLowerCase() // 去除所有空格和變小寫
       const name = store.name.toLowerCase().trim()
       const category = store.category.toLowerCase().trim()
       return name.includes(trimKeyword) || category.includes(trimKeyword)
     })
     : restaurants
+  res.render('index', { restaurants:matchedRestaurants, keyword})
 
-  res.render('index', { restaurants: matchedRestaurants, keyword })
 })
+
 
 app.get('/restaurant/:id', (req, res) => {
   const id = req.params.id
